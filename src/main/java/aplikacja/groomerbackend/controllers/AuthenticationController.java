@@ -4,9 +4,7 @@ package aplikacja.groomerbackend.controllers;
 import aplikacja.groomerbackend.dto.AuthRequestDto;
 import aplikacja.groomerbackend.services.AuthenticationService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +22,7 @@ public class AuthenticationController {
     @GetMapping("/login")
     public ResponseEntity<String> loginUser(@RequestBody AuthRequestDto request){
         try {
-            String JwtToken = authenticationService.loginUser(request);
+            String JwtToken = authenticationService.validateUserAndGenerateToken(request);
 
             return ResponseEntity.status(200).body(JwtToken);
 
@@ -38,8 +36,7 @@ public class AuthenticationController {
     }
 
     public String registerUser(@RequestBody AuthRequestDto request){
-
-
+        authenticationService.validateAndCreateUser(request);
         return "registered user";
     }
 

@@ -2,10 +2,11 @@ package aplikacja.groomerbackend.services;
 
 
 import aplikacja.groomerbackend.dto.AuthRequestDto;
+import aplikacja.groomerbackend.entity.Role;
 import aplikacja.groomerbackend.entity.UserEntity;
+import aplikacja.groomerbackend.exceptions.UserAlreadyExistsException;
 import aplikacja.groomerbackend.repository.UserRepository;
 import aplikacja.groomerbackend.services.validators.AuthRequestDtoValidator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -23,9 +24,9 @@ public class AuthenticationService {
         this.userRepository = userRepository;
     }
 
-    public String loginUser(AuthRequestDto request){
+    public String validateUserAndGenerateToken(AuthRequestDto request){
 
-        if(!requestValidator.validateAuthRequest(request)){
+        if(!requestValidator.validateLoginRequest(request)){
             throw new IllegalArgumentException("Bad credentials");
         }
 
@@ -39,14 +40,22 @@ public class AuthenticationService {
     }
 
 
-    public boolean registerUser(AuthRequestDto request){
+    public void validateAndCreateUser(AuthRequestDto request){
 
-        //validacja requesta
-        //sprawdzenie go w bazie czy nie istnieje juz
-        //rejestra usera
-        //ologowanie tego
+        if(!requestValidator.validateRegistrationRequest(request)){
+            throw new IllegalArgumentException("Bad credentials");
+        }
 
-        return true;
+        if(userRepository.existsByEmail(request.getEmail())){
+            throw new UserAlreadyExistsException("User with that email already Exists");
+        }
+
+        UserEntity user = new UserEntity(request.getUsername(),request.getEmail(),request.getPassword(),null, Role.EMPLOYEE,false);
+
+        userRepository.save(user);
+
+        //loggowanie tego
+        //zwroc obiekt??
     }
 
 

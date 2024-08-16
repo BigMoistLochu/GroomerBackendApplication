@@ -40,4 +40,13 @@ public class UserEntity {
         this.password = password;
     }
 
+    public UserEntity(String username,String email,String password,String avatar,Role role,boolean isActivated){
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.avatar = avatar;
+        this.role = role;
+        this.isActivated = isActivated;
+    }
+
 }
