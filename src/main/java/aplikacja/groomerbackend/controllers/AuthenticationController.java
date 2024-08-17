@@ -22,7 +22,7 @@ public class AuthenticationController {
     @GetMapping("/login")
     public ResponseEntity<String> loginUser(@RequestBody AuthRequestDto request){
         try {
-            String JwtToken = authenticationService.validateUserAndGenerateToken(request);
+            String JwtToken = authenticationService.validateUserAndGenerateLoginToken(request);
 
             return ResponseEntity.status(200).body(JwtToken);
 

@@ -7,6 +7,8 @@ import aplikacja.groomerbackend.entity.UserEntity;
 import aplikacja.groomerbackend.exceptions.UserAlreadyExistsException;
 import aplikacja.groomerbackend.repository.UserRepository;
 import aplikacja.groomerbackend.services.validators.AuthRequestDtoValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -19,12 +21,14 @@ public class AuthenticationService {
 
     private final AuthRequestDtoValidator requestValidator = new AuthRequestDtoValidator();
 
+    Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
+
     public AuthenticationService(JwtService jwtService, UserRepository userRepository){
         this.jwtService = jwtService;
         this.userRepository = userRepository;
     }
 
-    public String validateUserAndGenerateToken(AuthRequestDto request){
+    public String validateUserAndGenerateLoginToken(AuthRequestDto request){
 
         if(!requestValidator.validateLoginRequest(request)){
             throw new IllegalArgumentException("Bad credentials");
@@ -52,9 +56,12 @@ public class AuthenticationService {
 
         UserEntity user = new UserEntity(request.getUsername(),request.getEmail(),request.getPassword(),null, Role.EMPLOYEE,false);
 
-        userRepository.save(user);
+        UserEntity userSaved = userRepository.save(user);
+        if(userSaved != null) logger.info("User with email: " + userSaved.getEmail() + "is saved to DB");
 
-        //loggowanie tego
+
+        //wyslij maila z potwierdzeniem
+
         //zwroc obiekt??
     }
 

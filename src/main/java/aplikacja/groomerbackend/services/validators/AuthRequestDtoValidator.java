@@ -6,21 +6,22 @@ import aplikacja.groomerbackend.dto.AuthRequestDto;
 public class AuthRequestDtoValidator {
 
 
+    private final int PASSWORD_MIN_LENGTH = 10;
+    private final int PASSWORD_MAX_LENGTH = 30;
+
+    private final int EMAIL_MIN_LENGTH = 5;
+    private final int EMAIL_MAX_LENGTH = 50;
+
+    private final int USERNAME_MIN_LENGTH = 5;
+    private final int USERNAME_MAX_LENGTH = 40;
+
     /**
      * Validates email and password for login purposes.
      * @param authRequestDto
      * @return true if valid, otherwise false
      */
     public boolean validateLoginRequest(AuthRequestDto authRequestDto){
-
-        return authRequestDto.getEmail() != null
-                && authRequestDto.getPassword() != null
-                && !authRequestDto.getEmail().isBlank()
-                && !authRequestDto.getPassword().isBlank()
-                && authRequestDto.getEmail().contains("@")
-                && authRequestDto.getEmail().length() <= 50
-                && authRequestDto.getPassword().length() >= 10
-                && authRequestDto.getPassword().length() <= 30;
+        return isEmailValid(authRequestDto.getEmail()) && isPasswordValid(authRequestDto.getPassword());
     }
 
     /**
@@ -29,20 +30,32 @@ public class AuthRequestDtoValidator {
      * @return true if valid, otherwise false
      */
     public boolean validateRegistrationRequest(AuthRequestDto authRequestDto) {
-        return authRequestDto.getEmail() != null
-                && authRequestDto.getPassword() != null
-                && authRequestDto.getUsername() != null
-                && !authRequestDto.getEmail().isBlank()
-                && !authRequestDto.getPassword().isBlank()
-                && !authRequestDto.getUsername().isBlank()
-                && authRequestDto.getEmail().contains("@")
-                && authRequestDto.getEmail().length() <= 50
-                && authRequestDto.getPassword().length() >= 10
-                && authRequestDto.getPassword().length() <= 30
-                && authRequestDto.getUsername().length() >= 3
-                && authRequestDto.getUsername().length() <= 20;
+        return isEmailValid(authRequestDto.getEmail()) &&
+                isPasswordValid(authRequestDto.getPassword()) &&
+                isUsernameValid(authRequestDto.getUsername());
     }
 
+
+    boolean isEmailValid(String email){
+        if(email==null) return false;
+        if(email.isBlank()) return false;
+        if(!email.contains("@")) return false;
+        if(!(email.length() >= EMAIL_MIN_LENGTH && email.length() <= EMAIL_MAX_LENGTH)) return false;
+        return true;
+    }
+
+    boolean isPasswordValid(String password){
+        if(password==null) return false;
+        if(password.isBlank()) return false;
+        if(!(password.length() >= PASSWORD_MIN_LENGTH && password.length() <= PASSWORD_MAX_LENGTH)) return false;
+        return true;
+    }
+
+    boolean isUsernameValid(String username){
+        if(username==null) return false;
+        if(!(username.length() >= USERNAME_MIN_LENGTH && username.length() <= USERNAME_MAX_LENGTH)) return false;
+        return true;
+    }
 
 
 
