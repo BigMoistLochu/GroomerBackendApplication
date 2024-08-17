@@ -1,6 +1,7 @@
 package aplikacja.groomerbackend.services.validators;
 
 
+import aplikacja.groomerbackend.dto.AuthRequestDto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -154,6 +155,104 @@ public class AuthRequestDtoValidatorTest {
 
         // when
         boolean result = authRequestDtoValidator.isUsernameValid(username);
+
+        // then
+        Assertions.assertFalse(result);
+    }
+
+
+    @Test
+    void shouldReturnTrueWhenLoginRequestIsValid() {
+        // given
+        AuthRequestDto authRequestDto = new AuthRequestDto("ValidUser", "examplemail@wp.pl", "ValidPass123");
+
+        // when
+        boolean result = authRequestDtoValidator.validateLoginRequest(authRequestDto);
+
+        // then
+        Assertions.assertTrue(result);
+    }
+
+    @Test
+    void shouldReturnFalseWhenEmailIsInvalidInLoginRequest() {
+        // given
+        AuthRequestDto authRequestDto = new AuthRequestDto("ValidUser", "invalid-email", "ValidPass123");
+
+        // when
+        boolean result = authRequestDtoValidator.validateLoginRequest(authRequestDto);
+
+        // then
+        Assertions.assertFalse(result);
+    }
+
+    @Test
+    void shouldReturnFalseWhenPasswordIsInvalidInLoginRequest() {
+        // given
+        AuthRequestDto authRequestDto = new AuthRequestDto("ValidUser", "examplemail@wp.pl", "short");
+
+        // when
+        boolean result = authRequestDtoValidator.validateLoginRequest(authRequestDto);
+
+        // then
+        Assertions.assertFalse(result);
+    }
+
+    // Tests for validateRegistrationRequest
+    @Test
+    void shouldReturnTrueWhenRegistrationRequestIsValid() {
+        // given
+        AuthRequestDto authRequestDto = new AuthRequestDto("ValidUser", "examplemail@wp.pl", "ValidPass123");
+
+        // when
+        boolean result = authRequestDtoValidator.validateRegistrationRequest(authRequestDto);
+
+        // then
+        Assertions.assertTrue(result);
+    }
+
+    @Test
+    void shouldReturnFalseWhenEmailIsInvalidInRegistrationRequest() {
+        // given
+        AuthRequestDto authRequestDto = new AuthRequestDto("ValidUser", "invalid-email", "ValidPass123");
+
+        // when
+        boolean result = authRequestDtoValidator.validateRegistrationRequest(authRequestDto);
+
+        // then
+        Assertions.assertFalse(result);
+    }
+
+    @Test
+    void shouldReturnFalseWhenPasswordIsInvalidInRegistrationRequest() {
+        // given
+        AuthRequestDto authRequestDto = new AuthRequestDto("ValidUser", "examplemail@wp.pl", "short");
+
+        // when
+        boolean result = authRequestDtoValidator.validateRegistrationRequest(authRequestDto);
+
+        // then
+        Assertions.assertFalse(result);
+    }
+
+    @Test
+    void shouldReturnFalseWhenUsernameIsInvalidInRegistrationRequest() {
+        // given
+        AuthRequestDto authRequestDto = new AuthRequestDto("ab", "examplemail@wp.pl", "ValidPass123");
+
+        // when
+        boolean result = authRequestDtoValidator.validateRegistrationRequest(authRequestDto);
+
+        // then
+        Assertions.assertFalse(result);
+    }
+
+    @Test
+    void shouldReturnFalseWhenAllFieldsAreInvalidInRegistrationRequest() {
+        // given
+        AuthRequestDto authRequestDto = new AuthRequestDto("ab", "invalid-email", "short");
+
+        // when
+        boolean result = authRequestDtoValidator.validateRegistrationRequest(authRequestDto);
 
         // then
         Assertions.assertFalse(result);
