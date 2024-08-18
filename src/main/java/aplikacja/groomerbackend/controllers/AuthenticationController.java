@@ -2,15 +2,18 @@ package aplikacja.groomerbackend.controllers;
 
 
 import aplikacja.groomerbackend.dto.AuthRequestDto;
+import aplikacja.groomerbackend.dto.UserEntityDto;
+import aplikacja.groomerbackend.entity.UserEntity;
+import aplikacja.groomerbackend.exceptions.UserAlreadyExistsException;
+import aplikacja.groomerbackend.exceptions.UserNotSavedIntoDbException;
 import aplikacja.groomerbackend.services.AuthenticationService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
 
 @RestController
 @AllArgsConstructor
@@ -35,11 +38,24 @@ public class AuthenticationController {
         }
     }
 
-    public String registerUser(@RequestBody AuthRequestDto request){
-        authenticationService.validateAndCreateUser(request);
-        return "registered user";
-    }
+    @PostMapping("/register")
+    public ResponseEntity<Object> registerUser(@RequestBody AuthRequestDto request){
+        try {
+            UserEntityDto user = authenticationService.validateAndCreateUser(request);
 
+            return ResponseEntity.status(HttpStatus.CREATED).body(user);
+
+        }catch(IllegalArgumentException illegalArgumentException){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(illegalArgumentException.getMessage());
+        }
+        catch(UserAlreadyExistsException userAlreadyExistsException){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(userAlreadyExistsException.getMessage());
+        }catch (UserNotSavedIntoDbException userNotSavedIntoDbException){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(userNotSavedIntoDbException.getMessage());
+        }
+
+
+    }
 
 
 }

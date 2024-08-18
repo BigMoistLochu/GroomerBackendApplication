@@ -49,4 +49,10 @@ public class UserEntity {
         this.isActivated = isActivated;
     }
 
+    public UserEntity(Long id,String email,String username,String avatar) {
+        this.id = id;
+        this.email = email;
+        this.username = username;
+        this.avatar = avatar;
+    }
 }

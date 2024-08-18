@@ -2,9 +2,12 @@ package aplikacja.groomerbackend.services;
 
 
 import aplikacja.groomerbackend.dto.AuthRequestDto;
+import aplikacja.groomerbackend.dto.UserEntityDto;
 import aplikacja.groomerbackend.entity.Role;
 import aplikacja.groomerbackend.entity.UserEntity;
 import aplikacja.groomerbackend.exceptions.UserAlreadyExistsException;
+import aplikacja.groomerbackend.exceptions.UserNotSavedIntoDbException;
+import aplikacja.groomerbackend.mappers.UserMapper;
 import aplikacja.groomerbackend.repository.UserRepository;
 import aplikacja.groomerbackend.services.validators.AuthRequestDtoValidator;
 import org.slf4j.Logger;
@@ -20,6 +23,8 @@ public class AuthenticationService {
     private final UserRepository userRepository;
 
     private final AuthRequestDtoValidator requestValidator = new AuthRequestDtoValidator();
+
+    private final UserMapper userMapper = new UserMapper();
 
     Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
 
@@ -44,7 +49,7 @@ public class AuthenticationService {
     }
 
 
-    public void validateAndCreateUser(AuthRequestDto request){
+    public UserEntityDto validateAndCreateUser(AuthRequestDto request){
 
         if(!requestValidator.validateRegistrationRequest(request)){
             throw new IllegalArgumentException("Bad credentials");
@@ -57,12 +62,12 @@ public class AuthenticationService {
         UserEntity user = new UserEntity(request.getUsername(),request.getEmail(),request.getPassword(),null, Role.EMPLOYEE,false);
 
         UserEntity userSaved = userRepository.save(user);
-        if(userSaved != null) logger.info("User with email: " + userSaved.getEmail() + "is saved to DB");
 
+        if(userSaved==null) throw new UserNotSavedIntoDbException("An unexpected error occurred. Please try again later.");
 
-        //wyslij maila z potwierdzeniem
+        logger.info("User with email: " + userSaved.getEmail() + "is saved to DB");
 
-        //zwroc obiekt??
+        return userMapper.createUserEntityDtoFromUserEntity(userSaved);
     }
 
 
