@@ -1,5 +1,6 @@
 package aplikacja.groomerbackend.controllers;
 
+import org.springframework.boot.web.server.Cookie;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,6 +18,8 @@ public class AdminController {
     //router.get("/auth/adminValidate",authGuard,adminGuard,adminControllers.validateToken);
     //router.get("/employee/:id",authGuard,adminGuard,adminControllers.getEmployeeDetails);
 
+
+    //zeby korzystac z /api/admin/endpoint potrzebujesz byc zautoryzowany do tego
 
     @GetMapping("/customers")
     public String getCustomers(){

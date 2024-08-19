@@ -3,11 +3,16 @@ package aplikacja.groomerbackend.services;
 
 import aplikacja.groomerbackend.entity.UserEntity;
 import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import org.springframework.stereotype.Service;
 
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.auth0.jwt.interfaces.JWTVerifier;
+import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
+import java.util.Base64;
 import java.util.Date;
+
 
 @Service
 public class JwtService {
@@ -32,6 +37,25 @@ public class JwtService {
                 .withClaim("expiredTime",expiredTokenTime)
                 .sign(algorithm);
     }
+
+
+    public boolean validateToken(String token) {
+        try {
+            //weryfikator:
+            JWTVerifier verifier = JWT.require(algorithm).build();
+            //weryfikacja tokenu
+
+            DecodedJWT verifiedJwt = verifier.verify(token);
+            // porownanie podpisu:
+            String originalSignature = JWT.decode(token).getSignature();
+            String verifiedSignature = verifiedJwt.getSignature();
+
+            return verifiedSignature.equals(originalSignature);
+        } catch (JWTVerificationException exception) {
+            return false;
+        }
+    }
+
 
 
 
