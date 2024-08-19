@@ -6,7 +6,6 @@ import aplikacja.groomerbackend.dto.UserEntityDto;
 import aplikacja.groomerbackend.entity.Role;
 import aplikacja.groomerbackend.entity.UserEntity;
 import aplikacja.groomerbackend.exceptions.UserAlreadyExistsException;
-import aplikacja.groomerbackend.exceptions.UserNotSavedIntoDbException;
 import aplikacja.groomerbackend.mappers.UserMapper;
 import aplikacja.groomerbackend.repository.UserRepository;
 import aplikacja.groomerbackend.services.validators.AuthRequestDtoValidator;
@@ -33,7 +32,7 @@ public class AuthenticationService {
         this.userRepository = userRepository;
     }
 
-    public String validateUserAndGenerateLoginToken(AuthRequestDto request){
+    public String validateAndGenerateLoginToken(AuthRequestDto request){
 
         if(!requestValidator.validateLoginRequest(request)){
             throw new IllegalArgumentException("Bad credentials");
@@ -49,7 +48,7 @@ public class AuthenticationService {
     }
 
 
-    public UserEntityDto validateAndCreateUser(AuthRequestDto request){
+    public UserEntityDto validateAndRegisterUser(AuthRequestDto request){
 
         if(!requestValidator.validateRegistrationRequest(request)){
             throw new IllegalArgumentException("Bad credentials");
@@ -63,7 +62,7 @@ public class AuthenticationService {
 
         UserEntity userSaved = userRepository.save(user);
 
-        if(userSaved==null) throw new UserNotSavedIntoDbException("An unexpected error occurred. Please try again later.");
+        if(userSaved==null) throw new RuntimeException("User cant be saved");
 
         logger.info("User with email: " + userSaved.getEmail() + "is saved to DB");
 
