@@ -25,6 +25,7 @@ public class AuthenticationController {
     public ResponseEntity<String> loginUser(@RequestBody AuthRequestDto request, HttpServletResponse response){
         String jwtToken = authenticationService.validateAndGenerateLoginToken(request);
         //rozwiazanie z cookie secure dla frontendu: gdy przegladarka dostanie takie ciastko to przy ponownym requescie wysle je tylko przez https albo localhost
+        //takie rozwiazanie jest bezpieczniejsze niz przechowywanie w localstorage klienta,
 //        Cookie cookie = new Cookie("jwt", jwtToken);
 //        cookie.setSecure(true);
 //        response.addCookie(cookie);
@@ -35,11 +36,6 @@ public class AuthenticationController {
     public ResponseEntity<Object> registerUser(@RequestBody AuthRequestDto request){
             UserEntityDto user = authenticationService.validateAndRegisterUser(request);
             return ResponseEntity.status(HttpStatus.CREATED).body(user);
-    }
-
-    @PostMapping("/token")
-    public boolean token(@RequestParam String token, HttpServletResponse response){
-        return service.validateToken(token);
     }
 
 }

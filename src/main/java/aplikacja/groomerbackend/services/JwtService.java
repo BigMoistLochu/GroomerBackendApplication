@@ -39,6 +39,14 @@ public class JwtService {
     }
 
 
+    public String getEmailFromToken(String token){
+
+
+
+        return "email";
+    }
+
+
     public boolean validateToken(String token) {
         try {
             //weryfikator:
