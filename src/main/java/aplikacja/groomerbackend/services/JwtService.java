@@ -63,6 +63,8 @@ public class JwtService {
             String originalSignature = JWT.decode(token).getSignature();
             String verifiedSignature = verifiedJwt.getSignature();
 
+
+
             return verifiedSignature.equals(originalSignature);
         } catch (JWTVerificationException exception) {
             return false;

@@ -47,6 +47,11 @@ public class JwtAuthenticationCustomFilter extends OncePerRequestFilter {
 
         UserDetails userDetails = userRepository.findByEmail(emailFromToken);
 
+        if(userDetails==null){
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         UsernamePasswordAuthenticationToken userTokenToAuth = new UsernamePasswordAuthenticationToken(
                 userDetails.getUsername(),
                 null
