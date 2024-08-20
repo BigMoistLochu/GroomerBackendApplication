@@ -1,5 +1,6 @@
 package aplikacja.groomerbackend.services;
 
+import aplikacja.groomerbackend.entity.Role;
 import aplikacja.groomerbackend.entity.UserEntity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -59,6 +60,31 @@ public class JwtServiceTest {
         //then
         Assertions.assertFalse(results);
     }
+
+    @Test
+    void shouldReturnCorrectEmailWhenTokenIsCreated(){
+        //given
+        UserEntity user = new UserEntity("Januszek","email12345@wp.pl","password12345",null, Role.EMPLOYEE,false);
+
+        //when
+        String result_token = jwtService.generateToken(user);
+        String expected_email_from_token = jwtService.getEmailFromToken(result_token);
+        //then
+        Assertions.assertEquals("email12345@wp.pl",expected_email_from_token);
+    }
+
+    @Test
+    void getEmailFromTokenMethodshouldReturnNullWhenGeneratedTokenHasInvalidPayload(){
+        //given
+        String invalid_payload_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXUyJ9.validPayload.r0Sp579pO13jLI3aempPvovd2CIwd63sErGq9K1UYiU";
+
+        //when
+        String expected_null_email_from_token = jwtService.getEmailFromToken(invalid_payload_token);
+        //then
+        Assertions.assertNull(expected_null_email_from_token);
+    }
+
+
 
 
 
