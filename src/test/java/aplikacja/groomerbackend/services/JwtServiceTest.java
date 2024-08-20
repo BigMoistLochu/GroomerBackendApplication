@@ -12,7 +12,8 @@ public class JwtServiceTest {
     @Test
     void shouldReturnTrueWhenTokenIsCorrect(){
        //given
-       String correct_jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImtvbnJhZGQiLCJlbWFpbCI6ImtvbnJhZEtvcGthQHdwLnBsIiwiYXZhdGFyIjpudWxsLCJyb2xlIjoiQURNSU4iLCJjcmVhdGVUaW1lIjoxNzI0MTQ1Mjc1LCJleHBpcmVkVGltZSI6MTcyNDE0NTg3NX0.XJXu5L28VNCKfnYu3Rmjx-EnsUVOkyRkiMnEhaxtFqw";
+        UserEntity user = new UserEntity("Januszek","email12345@wp.pl","password12345",null, Role.EMPLOYEE,false);
+        String correct_jwt = jwtService.generateToken(user);
        //when
        boolean results =  jwtService.validateToken(correct_jwt);
        //then

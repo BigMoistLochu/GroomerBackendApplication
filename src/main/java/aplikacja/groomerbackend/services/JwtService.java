@@ -8,10 +8,8 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.auth0.jwt.interfaces.JWTVerifier;
 import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
-import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
 
@@ -51,19 +49,27 @@ public class JwtService {
         return claimMap.get("email").asString();
     }
 
-
+    /**
+     *
+     * @param token
+     * @return
+     */
     public boolean validateToken(String token) {
         try {
-            //weryfikator:
-            JWTVerifier verifier = JWT.require(algorithm).build();
             //weryfikacja tokenu
+            DecodedJWT verifiedJwt = JWT.require(algorithm).build().verify(token);
 
-            DecodedJWT verifiedJwt = verifier.verify(token);
             // porownanie podpisu:
-            String originalSignature = JWT.decode(token).getSignature();
             String verifiedSignature = verifiedJwt.getSignature();
+            String originalSignature = JWT.decode(token).getSignature();
 
 
+            Map<String,Claim> claimMap = verifiedJwt.getClaims();
+            if(!(claimMap.containsKey("createTime") && claimMap.containsKey("expiredTime"))) return false;
+
+            Date actualDate = new Date();
+            Date expiredTime = claimMap.get("expiredTime").asDate();
+            if(actualDate.after(expiredTime)) return false;
 
             return verifiedSignature.equals(originalSignature);
         } catch (JWTVerificationException exception) {
