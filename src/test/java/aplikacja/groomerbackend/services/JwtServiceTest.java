@@ -4,6 +4,11 @@ import aplikacja.groomerbackend.entity.Role;
 import aplikacja.groomerbackend.entity.UserEntity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+
+import java.sql.Timestamp;
+import java.util.Date;
 
 public class JwtServiceTest {
 
@@ -84,6 +89,22 @@ public class JwtServiceTest {
         //then
         Assertions.assertNull(expected_null_email_from_token);
     }
+
+
+//    @Test
+//    void generatedTokenShouldReturnFalseWhenIsExpired(){
+//        //given
+//        Date date = new Date();
+//        Timestamp actualyTime = new Timestamp(date.getTime());
+//        long tenMinutesInMillis = 10 * 60 * 1000;
+//        UserEntity user = new UserEntity("Januszek","email12345@wp.pl","password12345",null, Role.EMPLOYEE,false);
+//        //robisz mocka
+//        JwtService mockservice = Mockito.mock(JwtService.class);
+//        Mockito.when(mockservice.getTokenExpirationTime(actualyTime)).thenReturn(new Timestamp(actualyTime.getTime()-tenMinutesInMillis));
+//        Timestamp mockedTime = mockservice.getTokenExpirationTime(actualyTime);
+//
+//        String token = mockservice.generateToken(user);
+//    }
 
 
 

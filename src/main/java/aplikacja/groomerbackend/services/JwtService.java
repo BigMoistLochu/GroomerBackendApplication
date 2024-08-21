@@ -24,9 +24,7 @@ public class JwtService {
 
         Date date = new Date();
         Timestamp createdTokenTime = new Timestamp(date.getTime());
-        //added 10 minut to createdTokenTime
-        long tenMinutesInMillis = 10 * 60 * 1000;
-        Timestamp expiredTokenTime = new Timestamp(createdTokenTime.getTime()+tenMinutesInMillis);
+        Timestamp expiredTokenTime = getTokenExpirationTime(createdTokenTime);
 
         return JWT.create()
                 .withClaim("username",userDetails.getUsername())
@@ -36,6 +34,12 @@ public class JwtService {
                 .withClaim("createTime", createdTokenTime)
                 .withClaim("expiredTime",expiredTokenTime)
                 .sign(algorithm);
+    }
+
+    public Timestamp getTokenExpirationTime(Timestamp currentTime){
+        //added 10 minut to createdTokenTime
+        long tenMinutesInMillis = 10 * 60 * 1000;
+        return new Timestamp(currentTime.getTime()+tenMinutesInMillis);
     }
 
 
