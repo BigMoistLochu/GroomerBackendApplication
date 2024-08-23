@@ -81,8 +81,8 @@ public class JwtServiceTest {
     @Test
     void getEmailFromTokenMethodshouldReturnNullWhenGeneratedTokenHasInvalidPayload(){
         //given
-        String invalid_payload_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXUyJ9.validPayload.r0Sp579pO13jLI3aempPvovd2CIwd63sErGq9K1UYiU";
-
+        UserEntity user = new UserEntity("Januszek", null, "password12345", null, Role.EMPLOYEE, false);
+        String invalid_payload_token = jwtService.generateAccessTokenForUser(user);
         //when
         String expected_null_email_from_token = jwtService.getEmailFromToken(invalid_payload_token);
         //then
@@ -91,23 +91,21 @@ public class JwtServiceTest {
 
 
     @Test
-    void generatedTokenWithExpiredTokenShouldReturnFalseWhenTokenIsExpired(){
+    void shouldReturnFalseForExpiredToken() {
         // given
         UserEntity user = new UserEntity("Januszek", "email12345@wp.pl", "password12345", null, Role.EMPLOYEE, false);
         long fifteenMinutesInMillis = 15 * 60 * 1000;
-        Date randomDate = new Date();
-        Timestamp actualTime = new Timestamp(randomDate.getTime()+fifteenMinutesInMillis);
-        Timestamp expirationTime = new Timestamp(randomDate.getTime());
+        Date currentDate = new Date();
+        Timestamp generatedTime = new Timestamp(currentDate.getTime() + fifteenMinutesInMillis); // Token generated 15 min later
+        Timestamp expirationTime = new Timestamp(currentDate.getTime()); // Token expires now
 
-        //when
-        String token = jwtService.generateBearerToken(actualTime,expirationTime,user);
-        boolean result_should_be_false = jwtService.validateToken(token);
+        // when
+        String token = jwtService.generateBearerToken(generatedTime, expirationTime, user);
+        boolean isTokenValid = jwtService.validateToken(token);
 
         // then
-        Assertions.assertFalse(result_should_be_false, "Token should be expired and the validation should return false");
+        Assertions.assertFalse(isTokenValid, "Token should be expired and the validation should return false");
     }
-
-
 
 
 
