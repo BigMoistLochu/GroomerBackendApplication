@@ -32,7 +32,7 @@ public class AuthenticationService {
         this.userRepository = userRepository;
     }
 
-    public String validateAndGenerateLoginToken(AuthRequestDto request){
+    public String validateAndGenerateBearerToken(AuthRequestDto request){
 
         if(!requestValidator.validateLoginRequest(request)){
             throw new IllegalArgumentException("Bad credentials");
@@ -44,7 +44,7 @@ public class AuthenticationService {
             throw new UsernameNotFoundException("User with this email not found");
         }
 
-        return jwtService.generateToken(userFromDB);
+        return jwtService.generateAccessTokenForUser(userFromDB);
     }
 
 

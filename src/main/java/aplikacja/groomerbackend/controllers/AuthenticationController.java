@@ -5,7 +5,6 @@ import aplikacja.groomerbackend.dto.AuthRequestDto;
 import aplikacja.groomerbackend.dto.UserEntityDto;
 import aplikacja.groomerbackend.services.AuthenticationService;
 import aplikacja.groomerbackend.services.JwtService;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,7 +22,7 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<String> loginUser(@RequestBody AuthRequestDto request, HttpServletResponse response){
-        String jwtToken = authenticationService.validateAndGenerateLoginToken(request);
+        String jwtToken = authenticationService.validateAndGenerateBearerToken(request);
         //rozwiazanie z cookie secure dla frontendu: gdy przegladarka dostanie takie ciastko to przy ponownym requescie wysle je tylko przez https albo localhost
         //takie rozwiazanie jest bezpieczniejsze niz przechowywanie w localstorage klienta,
 //        Cookie cookie = new Cookie("jwt", jwtToken);

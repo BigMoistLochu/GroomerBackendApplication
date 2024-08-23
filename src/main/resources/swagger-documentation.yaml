@@ -4,36 +4,6 @@ info:
   title: Swagger Notification Microservice - OpenAPI 3.0
 
   description: |
-
-    # Notification Microservice
-
-    This microservice is designed for managing various types of notifications, including emails, SMS, and push notifications. Its primary responsibilities include:
-
-    - CRUD Operations: Performing Create, Read, Update, and Delete operations for notifications and their types.
-
-    - Notification Delivery: Sending notifications to clients in real-time.
-
-    - Scheduling: Allowing users to schedule notifications for future delivery.
-
-
-    Additionally, the service supports user grouping, enabling the sending of different notifications to different user groups. It uses configurable templates to standardize notifications, enhancing the reusability of content across multiple scheduling jobs and notification types.   
-
-
-    ## Key Features
-
-    - Group Management: Users can be organized into groups, facilitating targeted notifications.
-
-    - Configurable Templates: Templates can be customized to create a consistent structure for notifications, ensuring efficiency and reusability.
-
-    - Multi-Channel Support: Capable of handling various notification channels, including email, SMS, and push notifications.
-
-    - Scheduling Capabilities: Notifications can be scheduled for future dates and times, improving flexibility and timing.
-
-
-    By using this service, you can streamline your notification management processes, ensuring that the right message reaches the right audience at the right time.
-    
-    
-    
     ## Technologies
 
     - Spring Boot: Framework for building Java applications.
@@ -41,21 +11,6 @@ info:
     - Firebase Cloud Messaging: Service for sending push notifications.
 
     - Apache Kafka: Distributed event streaming platform.
-
-    - Twilio API: Communication API for SMS and voice.
-
-    - JavaMail Service: API for sending email.
-
-    - Thymeleaf Template Engine: Template engine for web and email templates.
-    
-    
-    
-    ## Useful Links
-
-    - [The Dot Notification repository](https://bitbucket.org/segmateksoftware/dotnotification)
-
-    - [The source API definition for the Notification Microservice](#)
-
   version: 1.0.0
 
 paths:

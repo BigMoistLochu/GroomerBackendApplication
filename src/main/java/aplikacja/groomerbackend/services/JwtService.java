@@ -20,50 +20,30 @@ public class JwtService {
     private final String secretKey = "exampleSecretKey";
     private final Algorithm algorithm = Algorithm.HMAC256(secretKey);
 
-    public String generateToken(UserEntity userDetails){
+    /**
+     * Generate accesToken for user and return it to the client
+     * @param userDetails from AuthRequestDto
+     * @return
+     */
+    public String generateAccessTokenForUser(UserEntity userDetails){
 
         Date date = new Date();
         Timestamp createdTokenTime = new Timestamp(date.getTime());
         Timestamp expiredTokenTime = getTokenExpirationTime(createdTokenTime);
-
-        return JWT.create()
-                .withClaim("username",userDetails.getUsername())
-                .withClaim("email",userDetails.getEmail())
-                .withClaim("avatar",userDetails.getAvatar())
-                .withClaim("role",userDetails.getRole().name())
-                .withClaim("createTime", createdTokenTime)
-                .withClaim("expiredTime",expiredTokenTime)
-                .sign(algorithm);
-    }
-
-    public Timestamp getTokenExpirationTime(Timestamp currentTime){
-        //added 10 minut to createdTokenTime
-        long tenMinutesInMillis = 10 * 60 * 1000;
-        return new Timestamp(currentTime.getTime()+tenMinutesInMillis);
-    }
-
-
-    public String getEmailFromToken(String token){
-
-        if(!validateToken(token)) return null;
-
-        Map<String,Claim> claimMap = JWT.decode(token).getClaims();
-        if(!claimMap.containsKey("email")) return null;
-
-        return claimMap.get("email").asString();
+        return generateBearerToken(createdTokenTime,expiredTokenTime,userDetails);
     }
 
     /**
-     *
-     * @param token
-     * @return
+     * If token signature is correct and token is not expired return true, otherwise false
+     * @param token from client
+     * @return boolean
      */
     public boolean validateToken(String token) {
         try {
             //weryfikacja tokenu
             DecodedJWT verifiedJwt = JWT.require(algorithm).build().verify(token);
 
-            // porownanie podpisu:
+            //porownanie podpisu:
             String verifiedSignature = verifiedJwt.getSignature();
             String originalSignature = JWT.decode(token).getSignature();
 
@@ -80,6 +60,37 @@ public class JwtService {
             return false;
         }
     }
+
+    public String getEmailFromToken(String token){
+
+        if(!validateToken(token)) return null;
+
+        Map<String,Claim> claimMap = JWT.decode(token).getClaims();
+        if(!claimMap.containsKey("email")) return null;
+
+        return claimMap.get("email").asString();
+    }
+
+    protected String generateBearerToken(Timestamp createdTokenTime,Timestamp expiredTokenTime,UserEntity userDetails){
+
+        return JWT.create()
+                .withClaim("username",userDetails.getUsername())
+                .withClaim("email",userDetails.getEmail())
+                .withClaim("avatar",userDetails.getAvatar())
+                .withClaim("role",userDetails.getRole().name())
+                .withClaim("createTime", createdTokenTime)
+                .withClaim("expiredTime",expiredTokenTime)
+                .sign(algorithm);
+    }
+
+    protected Timestamp getTokenExpirationTime(Timestamp currentTime){
+        //added 10 minut to createdTokenTime
+        long tenMinutesInMillis = 10 * 60 * 1000;
+        return new Timestamp(currentTime.getTime()+tenMinutesInMillis);
+    }
+
+
+
 
 
 

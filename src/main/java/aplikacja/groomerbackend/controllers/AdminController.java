@@ -18,9 +18,6 @@ public class AdminController {
     //router.get("/auth/adminValidate",authGuard,adminGuard,adminControllers.validateToken);
     //router.get("/employee/:id",authGuard,adminGuard,adminControllers.getEmployeeDetails);
 
-
-    //zeby korzystac z /api/admin/endpoint potrzebujesz byc zautoryzowany do tego
-
     @GetMapping("/customers")
     public String getCustomers(){
         return "test";

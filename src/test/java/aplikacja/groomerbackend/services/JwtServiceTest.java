@@ -4,7 +4,6 @@ import aplikacja.groomerbackend.entity.Role;
 import aplikacja.groomerbackend.entity.UserEntity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.sql.Timestamp;
@@ -18,7 +17,7 @@ public class JwtServiceTest {
     void shouldReturnTrueWhenTokenIsCorrect(){
        //given
         UserEntity user = new UserEntity("Januszek","email12345@wp.pl","password12345",null, Role.EMPLOYEE,false);
-        String correct_jwt = jwtService.generateToken(user);
+        String correct_jwt = jwtService.generateAccessTokenForUser(user);
        //when
        boolean results =  jwtService.validateToken(correct_jwt);
        //then
@@ -73,7 +72,7 @@ public class JwtServiceTest {
         UserEntity user = new UserEntity("Januszek","email12345@wp.pl","password12345",null, Role.EMPLOYEE,false);
 
         //when
-        String result_token = jwtService.generateToken(user);
+        String result_token = jwtService.generateAccessTokenForUser(user);
         String expected_email_from_token = jwtService.getEmailFromToken(result_token);
         //then
         Assertions.assertEquals("email12345@wp.pl",expected_email_from_token);
@@ -91,20 +90,28 @@ public class JwtServiceTest {
     }
 
 
-//    @Test
-//    void generatedTokenShouldReturnFalseWhenIsExpired(){
-//        //given
-//        Date date = new Date();
-//        Timestamp actualyTime = new Timestamp(date.getTime());
-//        long tenMinutesInMillis = 10 * 60 * 1000;
-//        UserEntity user = new UserEntity("Januszek","email12345@wp.pl","password12345",null, Role.EMPLOYEE,false);
-//        //robisz mocka
-//        JwtService mockservice = Mockito.mock(JwtService.class);
-//        Mockito.when(mockservice.getTokenExpirationTime(actualyTime)).thenReturn(new Timestamp(actualyTime.getTime()-tenMinutesInMillis));
-//        Timestamp mockedTime = mockservice.getTokenExpirationTime(actualyTime);
-//
-//        String token = mockservice.generateToken(user);
-//    }
+    @Test
+    void generatedTokenWithExpiredTokenShouldReturnFalseWhenTokenIsExpired(){
+        // given
+
+        UserEntity user = new UserEntity("Januszek", "email12345@wp.pl", "password12345", null, Role.EMPLOYEE, false);
+        JwtService mockService = Mockito.mock(JwtService.class);
+        Timestamp actualTime = new Timestamp(new Date().getTime());
+        long fifteenMinutesInMillis = 15 * 60 * 1000;
+
+
+        //when
+        Mockito.when(mockService.getTokenExpirationTime(actualTime))
+                .thenReturn(new Timestamp(actualTime.getTime()-fifteenMinutesInMillis));
+
+        Timestamp expirationTime = mockService.getTokenExpirationTime(actualTime);
+
+        String token = jwtService.generateBearerToken(actualTime,expirationTime,user);
+
+        boolean result_should_be_false = jwtService.validateToken(token);
+        // then
+        Assertions.assertFalse(result_should_be_false, "Token should be expired and the validation should return false");
+    }
 
 
 
