@@ -1,7 +1,7 @@
 package aplikacja.groomerbackend.services.validators;
 
 
-import aplikacja.groomerbackend.dto.AuthRequestDto;
+import aplikacja.groomerbackend.dto.AuthCredentialsRequestDto;
 
 public class AuthRequestDtoValidator {
 
@@ -17,22 +17,22 @@ public class AuthRequestDtoValidator {
 
     /**
      * Validates email and password for login purposes.
-     * @param authRequestDto
+     * @param authCredentialsRequestDto
      * @return true if valid, otherwise false
      */
-    public boolean validateLoginRequest(AuthRequestDto authRequestDto){
-        return isEmailValid(authRequestDto.getEmail()) && isPasswordValid(authRequestDto.getPassword());
+    public boolean validateLoginRequest(AuthCredentialsRequestDto authCredentialsRequestDto){
+        return isEmailValid(authCredentialsRequestDto.getEmail()) && isPasswordValid(authCredentialsRequestDto.getPassword());
     }
 
     /**
      * Validates email, password, and username for registration purposes.
-     * @param authRequestDto
+     * @param authCredentialsRequestDto
      * @return true if valid, otherwise false
      */
-    public boolean validateRegistrationRequest(AuthRequestDto authRequestDto) {
-        return isEmailValid(authRequestDto.getEmail()) &&
-                isPasswordValid(authRequestDto.getPassword()) &&
-                isUsernameValid(authRequestDto.getUsername());
+    public boolean validateRegistrationRequest(AuthCredentialsRequestDto authCredentialsRequestDto) {
+        return isEmailValid(authCredentialsRequestDto.getEmail()) &&
+                isPasswordValid(authCredentialsRequestDto.getPassword()) &&
+                isUsernameValid(authCredentialsRequestDto.getUsername());
     }
 
 

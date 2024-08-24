@@ -1,7 +1,7 @@
 package aplikacja.groomerbackend.services.validators;
 
 
-import aplikacja.groomerbackend.dto.AuthRequestDto;
+import aplikacja.groomerbackend.dto.AuthCredentialsRequestDto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -164,10 +164,10 @@ public class AuthRequestDtoValidatorTest {
     @Test
     void shouldReturnTrueWhenLoginRequestIsValid() {
         // given
-        AuthRequestDto authRequestDto = new AuthRequestDto("ValidUser", "examplemail@wp.pl", "ValidPass123");
+        AuthCredentialsRequestDto authCredentialsRequestDto = new AuthCredentialsRequestDto("ValidUser", "examplemail@wp.pl", "ValidPass123");
 
         // when
-        boolean result = authRequestDtoValidator.validateLoginRequest(authRequestDto);
+        boolean result = authRequestDtoValidator.validateLoginRequest(authCredentialsRequestDto);
 
         // then
         Assertions.assertTrue(result);
@@ -176,10 +176,10 @@ public class AuthRequestDtoValidatorTest {
     @Test
     void shouldReturnFalseWhenEmailIsInvalidInLoginRequest() {
         // given
-        AuthRequestDto authRequestDto = new AuthRequestDto("ValidUser", "invalid-email", "ValidPass123");
+        AuthCredentialsRequestDto authCredentialsRequestDto = new AuthCredentialsRequestDto("ValidUser", "invalid-email", "ValidPass123");
 
         // when
-        boolean result = authRequestDtoValidator.validateLoginRequest(authRequestDto);
+        boolean result = authRequestDtoValidator.validateLoginRequest(authCredentialsRequestDto);
 
         // then
         Assertions.assertFalse(result);
@@ -188,10 +188,10 @@ public class AuthRequestDtoValidatorTest {
     @Test
     void shouldReturnFalseWhenPasswordIsInvalidInLoginRequest() {
         // given
-        AuthRequestDto authRequestDto = new AuthRequestDto("ValidUser", "examplemail@wp.pl", "short");
+        AuthCredentialsRequestDto authCredentialsRequestDto = new AuthCredentialsRequestDto("ValidUser", "examplemail@wp.pl", "short");
 
         // when
-        boolean result = authRequestDtoValidator.validateLoginRequest(authRequestDto);
+        boolean result = authRequestDtoValidator.validateLoginRequest(authCredentialsRequestDto);
 
         // then
         Assertions.assertFalse(result);
@@ -201,10 +201,10 @@ public class AuthRequestDtoValidatorTest {
     @Test
     void shouldReturnTrueWhenRegistrationRequestIsValid() {
         // given
-        AuthRequestDto authRequestDto = new AuthRequestDto("ValidUser", "examplemail@wp.pl", "ValidPass123");
+        AuthCredentialsRequestDto authCredentialsRequestDto = new AuthCredentialsRequestDto("ValidUser", "examplemail@wp.pl", "ValidPass123");
 
         // when
-        boolean result = authRequestDtoValidator.validateRegistrationRequest(authRequestDto);
+        boolean result = authRequestDtoValidator.validateRegistrationRequest(authCredentialsRequestDto);
 
         // then
         Assertions.assertTrue(result);
@@ -213,10 +213,10 @@ public class AuthRequestDtoValidatorTest {
     @Test
     void shouldReturnFalseWhenEmailIsInvalidInRegistrationRequest() {
         // given
-        AuthRequestDto authRequestDto = new AuthRequestDto("ValidUser", "invalid-email", "ValidPass123");
+        AuthCredentialsRequestDto authCredentialsRequestDto = new AuthCredentialsRequestDto("ValidUser", "invalid-email", "ValidPass123");
 
         // when
-        boolean result = authRequestDtoValidator.validateRegistrationRequest(authRequestDto);
+        boolean result = authRequestDtoValidator.validateRegistrationRequest(authCredentialsRequestDto);
 
         // then
         Assertions.assertFalse(result);
@@ -225,10 +225,10 @@ public class AuthRequestDtoValidatorTest {
     @Test
     void shouldReturnFalseWhenPasswordIsInvalidInRegistrationRequest() {
         // given
-        AuthRequestDto authRequestDto = new AuthRequestDto("ValidUser", "examplemail@wp.pl", "short");
+        AuthCredentialsRequestDto authCredentialsRequestDto = new AuthCredentialsRequestDto("ValidUser", "examplemail@wp.pl", "short");
 
         // when
-        boolean result = authRequestDtoValidator.validateRegistrationRequest(authRequestDto);
+        boolean result = authRequestDtoValidator.validateRegistrationRequest(authCredentialsRequestDto);
 
         // then
         Assertions.assertFalse(result);
@@ -237,10 +237,10 @@ public class AuthRequestDtoValidatorTest {
     @Test
     void shouldReturnFalseWhenUsernameIsInvalidInRegistrationRequest() {
         // given
-        AuthRequestDto authRequestDto = new AuthRequestDto("ab", "examplemail@wp.pl", "ValidPass123");
+        AuthCredentialsRequestDto authCredentialsRequestDto = new AuthCredentialsRequestDto("ab", "examplemail@wp.pl", "ValidPass123");
 
         // when
-        boolean result = authRequestDtoValidator.validateRegistrationRequest(authRequestDto);
+        boolean result = authRequestDtoValidator.validateRegistrationRequest(authCredentialsRequestDto);
 
         // then
         Assertions.assertFalse(result);
@@ -249,10 +249,10 @@ public class AuthRequestDtoValidatorTest {
     @Test
     void shouldReturnFalseWhenAllFieldsAreInvalidInRegistrationRequest() {
         // given
-        AuthRequestDto authRequestDto = new AuthRequestDto("ab", "invalid-email", "short");
+        AuthCredentialsRequestDto authCredentialsRequestDto = new AuthCredentialsRequestDto("ab", "invalid-email", "short");
 
         // when
-        boolean result = authRequestDtoValidator.validateRegistrationRequest(authRequestDto);
+        boolean result = authRequestDtoValidator.validateRegistrationRequest(authCredentialsRequestDto);
 
         // then
         Assertions.assertFalse(result);

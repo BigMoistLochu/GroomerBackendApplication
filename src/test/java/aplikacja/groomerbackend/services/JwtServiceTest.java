@@ -1,10 +1,10 @@
 package aplikacja.groomerbackend.services;
 
+import aplikacja.groomerbackend.dto.AuthenticateResponseDto;
 import aplikacja.groomerbackend.entity.Role;
 import aplikacja.groomerbackend.entity.UserEntity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -17,9 +17,9 @@ public class JwtServiceTest {
     void shouldReturnTrueWhenTokenIsCorrect(){
        //given
         UserEntity user = new UserEntity("Januszek","email12345@wp.pl","password12345",null, Role.EMPLOYEE,false);
-        String correct_jwt = jwtService.generateAccessTokenForUser(user);
+        AuthenticateResponseDto authenticateResponse = jwtService.generateBearerAndRefreshToken(user);
        //when
-       boolean results =  jwtService.validateToken(correct_jwt);
+       boolean results =  jwtService.validateToken(authenticateResponse.getAccess_token());
        //then
         Assertions.assertTrue(results);
     }
@@ -72,8 +72,8 @@ public class JwtServiceTest {
         UserEntity user = new UserEntity("Januszek","email12345@wp.pl","password12345",null, Role.EMPLOYEE,false);
 
         //when
-        String result_token = jwtService.generateAccessTokenForUser(user);
-        String expected_email_from_token = jwtService.getEmailFromToken(result_token);
+        AuthenticateResponseDto result_token = jwtService.generateBearerAndRefreshToken(user);
+        String expected_email_from_token = jwtService.getEmailFromToken(result_token.getAccess_token());
         //then
         Assertions.assertEquals("email12345@wp.pl",expected_email_from_token);
     }
@@ -82,9 +82,9 @@ public class JwtServiceTest {
     void getEmailFromTokenMethodshouldReturnNullWhenGeneratedTokenHasInvalidPayload(){
         //given
         UserEntity user = new UserEntity("Januszek", null, "password12345", null, Role.EMPLOYEE, false);
-        String invalid_payload_token = jwtService.generateAccessTokenForUser(user);
+        AuthenticateResponseDto invalid_payload_token = jwtService.generateBearerAndRefreshToken(user);
         //when
-        String expected_null_email_from_token = jwtService.getEmailFromToken(invalid_payload_token);
+        String expected_null_email_from_token = jwtService.getEmailFromToken(invalid_payload_token.getAccess_token());
         //then
         Assertions.assertNull(expected_null_email_from_token);
     }
@@ -100,7 +100,7 @@ public class JwtServiceTest {
         Timestamp expirationTime = new Timestamp(currentDate.getTime()); // Token expires now
 
         // when
-        String token = jwtService.generateBearerToken(generatedTime, expirationTime, user);
+        String token = jwtService.generateToken(generatedTime, expirationTime, user);
         boolean isTokenValid = jwtService.validateToken(token);
 
         // then

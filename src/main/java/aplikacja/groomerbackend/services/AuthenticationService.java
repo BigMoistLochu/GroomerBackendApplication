@@ -1,7 +1,8 @@
 package aplikacja.groomerbackend.services;
 
 
-import aplikacja.groomerbackend.dto.AuthRequestDto;
+import aplikacja.groomerbackend.dto.AuthCredentialsRequestDto;
+import aplikacja.groomerbackend.dto.AuthenticateResponseDto;
 import aplikacja.groomerbackend.dto.UserEntityDto;
 import aplikacja.groomerbackend.entity.Role;
 import aplikacja.groomerbackend.entity.UserEntity;
@@ -32,7 +33,7 @@ public class AuthenticationService {
         this.userRepository = userRepository;
     }
 
-    public String validateAndGenerateBearerToken(AuthRequestDto request){
+    public AuthenticateResponseDto validateAndGenerateBearerToken(AuthCredentialsRequestDto request){
 
         if(!requestValidator.validateLoginRequest(request)){
             throw new IllegalArgumentException("Bad credentials");
@@ -44,11 +45,18 @@ public class AuthenticationService {
             throw new UsernameNotFoundException("User with this email not found");
         }
 
-        return jwtService.generateAccessTokenForUser(userFromDB);
+        return jwtService.generateBearerAndRefreshToken(userFromDB);
+    }
+
+    public AuthenticateResponseDto regenerateRefreshAndBearerToken(String refreshToken){
+        if(!jwtService.validateToken(refreshToken)) throw new IllegalArgumentException("Bad Refresh Token");
+
+        UserEntity user = userMapper.getUserEntityFromClaimsMap(jwtService.getClaimsFromToken(refreshToken));
+        return jwtService.generateBearerAndRefreshToken(user);
     }
 
 
-    public UserEntityDto validateAndRegisterUser(AuthRequestDto request){
+    public UserEntityDto validateAndRegisterUser(AuthCredentialsRequestDto request){
 
         if(!requestValidator.validateRegistrationRequest(request)){
             throw new IllegalArgumentException("Bad credentials");

@@ -1,7 +1,9 @@
 package aplikacja.groomerbackend.services;
 
 
+import aplikacja.groomerbackend.dto.AuthenticateResponseDto;
 import aplikacja.groomerbackend.entity.UserEntity;
+import aplikacja.groomerbackend.mappers.UserMapper;
 import com.auth0.jwt.JWT;
 
 import com.auth0.jwt.algorithms.Algorithm;
@@ -21,16 +23,23 @@ public class JwtService {
     private final Algorithm algorithm = Algorithm.HMAC256(secretKey);
 
     /**
-     * Generate accesToken for user and return it to the client
-     * @param userDetails from AuthRequestDto
+     *
+     * @param userDetails
      * @return
      */
-    public String generateAccessTokenForUser(UserEntity userDetails){
+    public AuthenticateResponseDto generateBearerAndRefreshToken(UserEntity userDetails){
 
         Date date = new Date();
-        Timestamp createdTokenTime = new Timestamp(date.getTime());
-        Timestamp expiredTokenTime = getTokenExpirationTime(createdTokenTime);
-        return generateBearerToken(createdTokenTime,expiredTokenTime,userDetails);
+        Timestamp currentTokenTime = new Timestamp(date.getTime());
+
+        Timestamp expiredBearerAccessTokenTime = getTokenExpirationTime(currentTokenTime);
+
+        long sevenDaysInMillis = 7 * 24 * 60 * 60 * 1000;
+        Timestamp expiredRefreshTokenTime = new Timestamp(currentTokenTime.getTime()+sevenDaysInMillis);
+
+        String refreshToken = generateToken(currentTokenTime,expiredRefreshTokenTime,userDetails);
+        String bearerAccessToken = generateToken(currentTokenTime,expiredBearerAccessTokenTime,userDetails);
+        return new AuthenticateResponseDto(bearerAccessToken,refreshToken);
     }
 
     /**
@@ -51,9 +60,9 @@ public class JwtService {
             Map<String,Claim> claimMap = verifiedJwt.getClaims();
             if(!(claimMap.containsKey("createTime") && claimMap.containsKey("expiredTime"))) return false;
 
-            Date actualDate = new Date();
-            Date expiredTime = claimMap.get("expiredTime").asDate();
-            if(actualDate.after(expiredTime)) return false;
+            Date actualDate = new Date(claimMap.get("createTime").asLong());
+            Date expiredDate = new Date(claimMap.get("expiredTime").asLong());
+            if(actualDate.after(expiredDate)) return false;
 
             return verifiedSignature.equals(originalSignature);
         } catch (JWTVerificationException exception) {
@@ -71,15 +80,15 @@ public class JwtService {
         return claimMap.get("email").asString();
     }
 
-    protected String generateBearerToken(Timestamp createdTokenTime,Timestamp expiredTokenTime,UserEntity userDetails){
+    protected String generateToken(Timestamp createdTokenTime, Timestamp expiredTokenTime, UserEntity userDetails){
 
         return JWT.create()
                 .withClaim("username",userDetails.getUsername())
                 .withClaim("email",userDetails.getEmail())
                 .withClaim("avatar",userDetails.getAvatar())
                 .withClaim("role",userDetails.getRole().name())
-                .withClaim("createTime", createdTokenTime)
-                .withClaim("expiredTime",expiredTokenTime)
+                .withClaim("createTime", createdTokenTime.getTime())
+                .withClaim("expiredTime",expiredTokenTime.getTime())
                 .sign(algorithm);
     }
 
@@ -89,12 +98,10 @@ public class JwtService {
         return new Timestamp(currentTime.getTime()+tenMinutesInMillis);
     }
 
-
-
-
-
-
-
+    public Map<String,Claim> getClaimsFromToken(String token){
+        if(!validateToken(token)) return null;
+        return JWT.decode(token).getClaims();
+    }
 
 
 

@@ -56,11 +56,11 @@ public class UserEntity implements UserDetails {
         this.isActivated = isActivated;
     }
 
-    public UserEntity(Long id,String email,String username,String avatar) {
-        this.id = id;
-        this.email = email;
+    public UserEntity(String username, String email, String avatar, Role role) {
         this.username = username;
+        this.email = email;
         this.avatar = avatar;
+        this.role = role;
     }
 
     @Override
