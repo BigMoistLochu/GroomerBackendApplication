@@ -1,16 +1,13 @@
 openapi: 3.0.0
 info:
 
-  title: Swagger Notification Microservice - OpenAPI 3.0
+  title: Documentation For GroomerShop- OpenAPI 3.0
 
   description: |
     ## Technologies
 
     - Spring Boot: Framework for building Java applications.
 
-    - Firebase Cloud Messaging: Service for sending push notifications.
-
-    - Apache Kafka: Distributed event streaming platform.
   version: 1.0.0
 
 paths:
