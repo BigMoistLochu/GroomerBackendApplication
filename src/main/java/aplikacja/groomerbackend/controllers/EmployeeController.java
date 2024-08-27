@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class EmployeeController {
 
 
-
+//router.post("/login",employeeControllers.login);
+//router.put("/change-password",authGuard,employeeControllers.changePassword)
 
 
 }
